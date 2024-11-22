@@ -102,7 +102,7 @@ vid4.onplay = function() {
 function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition, showError);
-    navigator.geolocation.watchPosition(success);
+    navigator.geolocation.watchPosition(showPosition);
 vid.play();
   } else { 
     x.innerHTML = "Geolocation is not supported by this browser."
